@@ -11,9 +11,10 @@
                 "-o",
                 //"${fileDirname}\\${fileBasenameNoExtension}.exe"
                 // 输出路径：项目根目录/out/源文件名.exe
-        //"${workspaceFolder}\\out\\${fileBasenameNoExtension}.exe"
-         // 动态生成输出路径：out/源文件所在子目录/文件名.exe
-        "${workspaceFolder}/out/${relativeFileDirname}/${fileBasenameNoExtension}.exe"
+                //"${workspaceFolder}\\out\\${fileBasenameNoExtension}.exe"
+                // 动态生成输出路径：out/源文件所在子目录/文件名.exe
+                // "${workspaceFolder}/out/${relativeFileDirname}/${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"

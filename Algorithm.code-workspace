@@ -10,7 +10,8 @@
             "random": "c",
             "iosfwd": "c",
             "functional": "c",
-            "valarray": "c"
+            "valarray": "c",
+            "iostream": "cpp"
         }
     }
 }

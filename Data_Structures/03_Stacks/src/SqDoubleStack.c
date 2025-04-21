@@ -1,4 +1,5 @@
 //*两栈共享空间(双端栈)，一个数组，从两个方向压栈，出栈,top1+1==top2时，栈满
+//*顺序栈，两栈共享空间，最大化利用数组空间
 #include <stdio.h>
 #define MAXSIZE 100
 #define OK 1
