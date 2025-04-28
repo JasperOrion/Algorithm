@@ -130,3 +130,152 @@ status ClearList(LinkList *L)
     (*L)->next = NULL;
     return OK;
 }
+//* 删除链表中绝对值相同的节点,再搞一个数组储存
+// 拿空间换时间
+void removeNode(Node *L, int n)
+{
+    Node *p = L;
+    int index; // 做数组下标使用
+    int *q = (int *)malloc(sizeof(int) * n + 1);
+    for (int i = 0; i < n + 1; i++)
+        *(q + i) = 0;
+    while (p->next != NULL)
+    {
+        // abs获取绝对值
+        index = abs(p->next->data);
+        if (*(q + index) == 0)
+        {
+            *(q + index) = 1;
+            p = p->next;
+        }
+        else
+        {
+            Node *temp = p->next;
+            p->next = temp->next;
+            free(temp);
+        }
+    }
+    free(q);
+}
+//*反转链表
+Node *reverseList(Node *head)
+{
+    Node *first = NULL;
+    Node *second = head->next;
+    Node *third;
+    while (second != NULL)
+    {
+        third = second->next;
+        second->next = first;
+        first = second;
+        second = third;
+    }
+    Node *hd = initList();
+    hd->next = first;
+}
+//*删除链表的中间节点
+int DelMiddleNode(Node *head)
+{
+    if (head == NULL)
+        return 0;
+    Node *fast = head->next;
+    Node *slow = head;
+    while (fast != NULL || fast->next != NULL)
+    {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    Node *temp = slow->next;
+    slow->next = temp->next;
+    free(temp);
+    return 1;
+}
+//*重排链表顺序例如1 2 3  4 5 6 -->1 6 2  5 3 4
+void reOrderList(Node *head)
+{
+    // 先找中间节点
+    Node *fast = head->next;
+    Node *slow = head;
+    while (fast != NULL || fast->next != NULL)
+    {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    Node *first = NULL;
+    Node *second = slow->next;
+    slow->next = NULL;
+    Node *third;
+    while (second != NULL)
+    {
+        third = second->next;
+        second->next = first;
+        first = second;
+        second = third;
+    }
+    Node *p1 = head->next;
+    Node *q1 = first;
+    Node *p2, *q2;
+    while (p1 != NULL && q1 != NULL)
+    {
+        p2 = p1->next;
+        q2 = q1->next;
+
+        p1->next = q1;
+        q1->next = p2;
+
+        p1 = p2;
+        q1 = q2;
+    }
+}
+//*判断链表有无环
+int isCycle(Node *head)
+{
+    Node *fast = head->next;
+    Node *slow = head;
+    while (fast != NULL && slow != NULL)
+    {
+        fast = fast->next->next;
+        slow = slow->next;
+        if (fast == slow)
+            return 1;
+    }
+    return 0;
+}
+//*找到链表环的入口
+Node *findBegin(Node *head)
+{
+    if (head == NULL || head->next == NULL)
+    {
+        return NULL;
+    }
+    Node *fast = head->next;
+    Node *slow = head;
+    int count = 1;
+    while (fast != NULL && slow != NULL)
+    {
+        fast = fast->next->next;
+        slow = slow->next;
+        if (fast == slow)
+        {
+
+            while (slow->next != fast)
+            {
+                count++;
+                slow = slow->next;
+            }
+            fast = head;
+            slow = head;
+            for (int i = 0; i < count; i++)
+            {
+                fast = fast->next;
+            }
+            while (fast != slow)
+            {
+                fast = fast->next;
+                slow = slow->next;
+            }
+            return slow;
+        }
+    }
+    return NULL;
+}
