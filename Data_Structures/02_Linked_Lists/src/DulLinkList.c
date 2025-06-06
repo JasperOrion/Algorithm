@@ -36,6 +36,14 @@ Node *insertTail(Node *tail, ElemType e)
 int insertNode(Node *L, int pos, ElemType e)
 {
     Node *p = L;
+    if (p->next == NULL)
+    {
+        Node *q = (Node *)malloc(sizeof(Node));
+        q->data = e;
+        q->prev = p;
+        p->next = q;
+        q->next = NULL;
+    }
     int i = 0;
     while (i < pos - 1)
     {
@@ -55,3 +63,37 @@ int insertNode(Node *L, int pos, ElemType e)
     p->next = q;
     return 1;
 }
+//*删除节点
+int deleteNode(Node *L, int pos)
+{
+    Node *p = L; // p是要删除位置的前置节点
+    if (p->next == NULL)
+        return 0;
+    int i = 0;
+    while (i < pos - 1)
+    {
+        p = p->next;
+        i++;
+        if (p == NULL)
+            return 0;
+    }
+    if (p->next == NULL)
+    {
+        printf("删除元素错误");
+        return 0;
+    }
+    // p->next->next为！NULL时
+    Node *q = p->next;
+    if (q->next != NULL)
+    {
+        p->next = q->next;
+        q->next->prev = p;
+    }
+    else
+    {
+        p->next = NULL;
+    }
+    free(q);
+    return 1;
+}
+//
