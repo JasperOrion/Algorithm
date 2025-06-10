@@ -44,20 +44,23 @@ void output_vector(vector *v)
     return;
 }
 //*扩容
-// int expend(vector *v)
-// {
-//     if (v == NULL)
-//         return 0;
-//     printf("expend v from %d to %d\n", v->size, 2 * v->size);
-//     v->data = (int *)realloc(v->data, sizeof(int) * 2 * v->size);
-//     v->size *= 2;
-//     return 1;
-// }
+int expend(vector *v)
+{
+    if (v == NULL)
+        return 0;
+    printf("expend v from %d to %d\n", v->size, 2 * v->size);
+    int *p = (int *)realloc(v->data, sizeof(int) * 2 * v->size);
+    if (p == NULL)
+        return 0;
+    v->data = p;
+    v->size *= 2;
+    return 1;
+}
 
 //*插入操作
 int insert(vector *v, int pos, int val)
 {
-    if (v->size == v->count)
+    if (v->size == v->count && !expend(v))
         return 0;
     // 边界检查：pos必须在[0, count]范围内
     if (pos < 0 || pos > v->count)
@@ -88,7 +91,7 @@ int erase(vector *v, int pos)
 int main()
 {
     srand(time(0));
-    vector *v = getNewVector(MAX_OP);
+    vector *v = getNewVector(2);
     for (int i = 0; i < MAX_OP; i++)
     {
         int op = rand() % 4, pos, val, ret;
