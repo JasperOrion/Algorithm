@@ -2,6 +2,10 @@
     "folders": [
         {
             "path": "."
+        },
+        {
+            "name": "数组",
+            "path": "../../ProjectAlgorithm/Algorithm/LeetCode/初级算法/数组"
         }
     ],
     "settings": {
