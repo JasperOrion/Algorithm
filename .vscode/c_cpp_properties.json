@@ -3,16 +3,22 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/include/c++",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/include/c++/x86_64-w64-mingw32",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/include/c++/backward",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/include",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/include-fixed",
+                "D:/Develop/pythonAndJdk/mingw15.1.0/bin/../lib/gcc/x86_64-w64-mingw32/15.1.0/../../../../x86_64-w64-mingw32/include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:/Develop/pythonAndJdk/mingw64/bin/g++.exe",
+            "compilerPath": "D:\\Develop\\pythonAndJdk\\mingw15.1.0\\bin\\gcc.exe",
             "cStandard": "c17",
-            "cppStandard": "gnu++14",
+            "cppStandard": "c++23",
             "intelliSenseMode": "windows-gcc-x64"
         }
     ],

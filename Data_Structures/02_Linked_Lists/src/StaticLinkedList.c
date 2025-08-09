@@ -1,84 +1,143 @@
 #include <stdio.h>
-#define MAXSIZE 1000
-#define OK 1;
-#define ERROR 0
-// 定义元素类型
-typedef int ElemType;
-typedef int status;
+#include <stdbool.h>
+#define MAXSIZE 100
+
 typedef struct
 {
-    ElemType data;
-    int cur; // 游标cursor,为零时表示无指向
-} Component, StaticLinkList[MAXSIZE];
-// 将数组连成一个链表,space[0].cur是头指针,"0"代表空指针
-// 数组第一个元素cur用来存放备用链表(空闲空间)第一个节点的下标
-// 最后一个元素cur用来存储第一个插入元素的下标,相当于头节点
-status InitList(StaticLinkList space)
+    int data;
+    int next;
+} SNode;
+
+typedef struct
 {
-    for (int i = 0; i < MAXSIZE - 1; i++)
-        space[i].cur = i + 1;
-    space[MAXSIZE - 1].cur = 0;
-    return OK;
+    SNode list[MAXSIZE];
+} StaticList;
+
+//*初始化静态链表
+void InitList(StaticList *Slist)
+{
+    // 静态链表固定头结点
+    Slist->list[MAXSIZE - 1].next = -1;
+    // 固定空闲链表头结点
+    Slist->list[0].next = 1;
+    for (int i = 0; i < MAXSIZE - 2; i++)
+        Slist->list[i].next = i + 1;
+    // 最后一个空闲节点
+    Slist->list[MAXSIZE - 2].next = -1;
 }
-// 静态链表的插入操作 数组无法操作malloc()和free(),需要借助空闲空间
-// 如果备用链表非空，返回分配的节点下标，否则返回 0
-int Malloc_SSL(StaticLinkList space)
+//*分配空闲节点,成功分配返回索引,否则返回-1
+int Malloc(StaticList *Slist)
 {
-    int i = space[0].cur;
-    if (space[0].cur)
-        space[0].cur = space[i].cur;
-    return i;
+    int index = Slist->list[0].next;
+    if (index == -1)
+        return -1;
+    // 跟新空闲链表表头
+    Slist->list[0].next = Slist->list[index].next;
+    return index;
 }
-// 静态链表的插入操作
-status ListInsert(StaticLinkList L, int i, ElemType e)
+//*释放结点到空链表
+void Free(StaticList *Slist, int index)
 {
-    int j, k;
-    k = MAXSIZE - 1;
-    // 判断插入是否合规
-    if (i < 1 || i > ListLength(L) + 1) // 注意插入的位置可以是ListLength(L)的位置，但删除不行
-        return ERROR;
-    j = Malloc_SSL(L);
-    if (j)
+    Slist->list[index].next = Slist->list[0].next;
+    Slist->list[0].next = index;
+}
+
+// 在pos位置处插入结点
+bool ListInsert(StaticList *Slist, int pos, int data)
+{
+    if (pos < 1)
+        return false;
+    int cur = MAXSIZE - 1;
+    int count = 0;
+    while (cur != -1 && count < pos - 1)
     {
-        for (int l = 1; i < i - 1; l++) // 找到第i个元素之前的位置，
-            k = L[k].cur;
-        L[j].data = e;
-        // 千万不要颠倒
-        L[j].cur = L[k].cur;
-        L[k].cur = j;
-        return OK;
+        cur = Slist->list[cur].next;
+        count++;
     }
-    return ERROR;
+    if (cur == -1 || count < pos - 1)
+        return false;
+
+    int newIndex = Malloc(Slist);
+    if (newIndex == -1)
+        return false;
+    Slist->list[newIndex].data = data;
+    Slist->list[newIndex].next = Slist->list[cur].next;
+    Slist->list[cur].next = newIndex;
+
+    return true;
 }
-// 静态链表的删除操作
-// Free_SSL()函数
-void Free_SSL(StaticLinkList space, int k)
+// 删除pos位置处的元素
+bool ListDelete(StaticList *Slist, int pos)
 {
-    space[k].cur = space[0].cur;
-    space[0].cur = k;
-}
-// 删除L中第i个数据元素 e
-status ListDelete(StaticLinkList L, int i)
-{
-    int j, k;
-    k = MAXSIZE - 1;
-    if (i < 1 || i > ListLength(L)) // 注意插入的位置可以是ListLength(L)的位置，但删除不行
-        return ERROR;
-    for (int l = 1; l < i - 1; l++)
-        k = L[k].cur;
-    j = L[k].cur; //
-    L[k].cur = L[i].cur;
-    Free_SSL(L, j);
-    return OK;
-}
-int ListLength(StaticLinkList L)
-{
-    int length = 0;
-    int i = L[MAXSIZE - 1].cur;
-    while (i)
+    if (pos < 1)
+        return false;
+    int prev = MAXSIZE - 1;
+    int count = 0;
+    while (prev != -1 && count < pos - 1)
     {
-        i = L[i].cur;
-        length++;
+        prev = Slist->list[prev].next;
+        count++;
     }
-    return length;
+    if (prev == -1 || count < pos - 1)
+        return false;
+    int deleteindex = Slist->list[prev].next;
+    if (deleteindex == -1)
+        return false;
+    Slist->list[prev].next = Slist->list[deleteindex].next;
+    Free(Slist, deleteindex);
+    return true;
+}
+// 遍历
+void PrintList(StaticList *Slist)
+{
+    int current = Slist->list[MAXSIZE - 1].next;
+    printf("StaticList [");
+    while (current != -1)
+    {
+        printf("%d", Slist->list[current].data);
+        current = Slist->list[current].next;
+        if (current != -1)
+            printf("->");
+    }
+    printf(" ]\n");
+    // 打印空链表信息
+    int freeCount = 0;
+    int freeCur = Slist->list[0].next;
+    while (freeCur != -1)
+    {
+        freeCount++;
+        freeCur = Slist->list[freeCur].next;
+    }
+}
+int main()
+{
+    StaticList L;
+    InitList(&L);
+
+    // 功能演示
+    printf("Inserting elements...\n");
+    ListInsert(&L, 1, 10); // 位置1插入10
+    ListInsert(&L, 1, 20); // 位置1插入20(头插)
+    ListInsert(&L, 3, 30); // 位置3插入30(尾插)
+    PrintList(&L);         // 预期: 20 -> 10 -> 30
+
+    printf("\nInserting at position 2...\n");
+    ListInsert(&L, 2, 15); // 中间插入
+    PrintList(&L);         // 预期: 20 -> 15 -> 10 -> 30
+
+    printf("\nDeleting position 3...\n");
+    ListDelete(&L, 3); // 删除元素
+    PrintList(&L);     // 预期: 20 -> 15 -> 30
+
+    printf("\nAttempting invalid operations...\n");
+    if (!ListInsert(&L, 10, 100))
+    {
+        printf("Failed to insert at invalid position\n");
+    }
+    if (!ListDelete(&L, 5))
+    {
+        printf("Failed to delete at invalid position\n");
+    }
+
+    return 0;
 }
