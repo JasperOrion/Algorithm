@@ -2,6 +2,18 @@
 #define MAX_TREE_SIZE 100
 typedef int TElemType;
 
+//*双亲表示法
+typedef struct PTNode {
+    int data;
+    int parent;
+} PTNode;
+
+typedef struct {
+    PTNode nodes[MAX_TREE_SIZE];
+    int root;  // 根节点位置
+    int count; // 当前节点数
+} PTree;
+
 //*树的孩子表示法结构定义
 typedef struct CTNode // 孩子节点
 {
@@ -9,15 +21,13 @@ typedef struct CTNode // 孩子节点
     struct CTNode *next;
 } *ChildPtr;
 
-typedef struct
-{ // 表头结构
+typedef struct { // 表头结构
     TElemType data;
     ChildPtr firstchild;
 
 } CTBox;
 
-typedef struct
-{
+typedef struct {
     CTBox nodes[MAX_TREE_SIZE]; // 节点数组
     int r, n;                   // 根的位置和节点数值
 } CTree;
@@ -29,22 +39,19 @@ typedef struct CTNode // 孩子节点不变
     struct CTNode *next;
 } *ChildPtr, *ParentPtr;
 
-typedef struct
-{ // 表头结构
+typedef struct { // 表头结构
     TElemType data;
     ChildPtr firstchild;
     ParentPtr parent;
 } CTBox;
 
-typedef struct
-{
+typedef struct {
     CTBox nodes[MAX_TREE_SIZE]; // 节点数组
     int r, n;                   // 根的位置和节点数值
 } CTree;
 
 //*孩子兄弟表示法
-typedef struct
-{
+typedef struct {
     TElemType data;
     struct CSNode *firstchild, *right;
 } CSNode, *CSTree;
